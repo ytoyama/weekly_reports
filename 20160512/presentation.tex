@@ -1,0 +1,127 @@
+\documentclass[aspectratio=43,unicode,10pt]{beamer}
+\usetheme{ttipresentation}
+
+\usepackage{luatexja}
+\usepackage{luatexja-fontspec}
+\usepackage{graphicx}
+\usepackage{multicol}
+
+\setmainjfont{ipagp.otf}
+\beamertemplatenavigationsymbolsempty
+
+\newcommand{\itemtitle}[1]{\textbf{#1}\\}
+\newcommand{\fire}[1]{\textcolor{red}{\textbf{#1}}}
+%\newcommand{\freeze}[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand{\then}{\textcolor{ttiblue}{\textbf{⇒}}\hspace{1ex}}
+\newcommand{\good}{\textcolor{orange}{\textbf{◎}}\hspace{1ex}}
+\newcommand{\arrow}{\textcolor{ttiblue}{\textbf{→}}\hspace{1ex}}
+\newcommand{\mb}[1]{\mathbf{#1}}
+
+
+\title{今週の進捗}
+\institute{知能数理研究室}
+\author{12056 外山 洋太}
+\date{\today}
+
+
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{新しいモデルの実装}
+  \begin{block}{char2word2sent2doc by someone, NAACL 2016}
+    \begin{itemize}
+      \item 三輪先生から貰った論文が元
+      \item 元論文はword2sent2docだった
+        \begin{itemize}
+          \item 単語のembeddingsから文、文書のembeddingsを順に
+                Bi-directional atttentioned GRU RNNで作成
+        \end{itemize}
+      \item 同じembedding生成の方法
+        \begin{itemize}
+          \item Attention付き
+          \item Bi-directional
+        \end{itemize}
+      \item パラメータは主に文字のembeddingsとGRU、分類のための全結合層
+      \item char2word, word2sent, sent2docのRNNは全て同じ実装
+        \begin{itemize}
+          \item パラメータは別で持つ
+          \item 実験ではハイパーパラメータはほとんど一緒
+        \end{itemize}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{新しいモデルの実装}
+  \begin{block}{ハイパーパラメータ}
+    \begin{itemize}
+      \item embeddingサイズ（一方向）
+        \begin{itemize}
+          \item 文字：32
+          \item 単語：32
+          \item 文：32
+          \item 文書：32
+        \end{itemize}
+      \item 隠れ層の数：1
+      \item 隠れ層ニューロン数：64
+      \item (出力層ニューロン数：1)
+      \item ドロップアウト率：0.6
+      \item L2正則化係数：1e-6
+      \item context vectorサイズ：32
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{新しいモデルの実装}
+  \begin{block}{その他実験設定}
+    \begin{itemize}
+      \item 学習回数：1024
+      \item バッチサイズ：1024 （今後減らします。）
+      \item 訓練データサイズ：25'000
+      \item 評価データサイズ：25'000
+        \begin{itemize}
+          \item 各々positive, negativeが12'500ずつ
+        \end{itemize}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{新しいモデルの実装}
+  \begin{block}{実験結果}
+    実験が終わっていません
+  \end{block}
+\end{frame}
+
+\begin{frame}{TensorFlowとDockerとCUDA}
+  \begin{block}{TensorFlowの現在}
+    \begin{itemize}
+      \item Linuxの公式サポートはUbuntu 14.04 LTSのみ
+      \item CPU版はFedoraでも動く
+      \item GPU版はUbuntuとFedoraでディレクトリ構造が少し違うのでそのままでは
+            動かない \\
+            \then 他の方法
+        \begin{itemize}
+          \item \good 公式のDockerイメージ
+          \item chroot?
+        \end{itemize}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{TensorFlowとDockerとCUDA}
+  \begin{block}{公式のDockerイメージ}
+    \begin{itemize}
+      \item ホスト側Linuxの公式サポートはUbuntu 14.04 LTSのみ
+      \item Githubのリンク (https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/docker)
+      \item すごく速い（TITAN X x 3で100 iterations / hour以上）
+        \begin{itemize}
+          \item CPU x 16 (hyperthreading)で半日100 iterationsくらい
+        \end{itemize}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\end{document}
