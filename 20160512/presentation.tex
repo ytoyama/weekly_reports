@@ -32,6 +32,27 @@
 \end{frame}
 
 \begin{frame}{新しいモデルの実装}
+  \begin{block}{GW以前のモデル (char2doc)}
+    \begin{itemize}
+      \item 文字のembeddingsから直接文書のembeddingsを作る
+      \item sequenceの長さ〜1024 \arrow \fire{辛い}
+    \end{itemize}
+  \end{block}
+  \begin{block}{IMDbデータセット}
+    \begin{itemize}
+      \item average sents / doc : 12.33
+      \item average words / sent : 21.45
+      \item average chars / word : 4.02
+      \begin{itemize}
+        \item 英語平均単語長：約5.1 (http://www.wolframalpha.com/input/?i=average+english+word+length)
+        \item ',', '.', '!', '?'の記号
+        \item They'llの"ll"
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{新しいモデルの実装}
   \begin{block}{char2word2sent2doc by someone, NAACL 2016}
     \begin{itemize}
       \item 三輪先生から貰った論文が元
@@ -45,7 +66,7 @@
           \item Attention付き
           \item Bi-directional
         \end{itemize}
-      \item パラメータは主に文字のembeddingsとGRU、分類のための全結合層
+      \item パラメータは主に文字のembeddingsとGRU、\\分類のための全結合層
       \item char2word, word2sent, sent2docのRNNは全て同じ実装
         \begin{itemize}
           \item パラメータは別で持つ
